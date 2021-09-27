@@ -67,7 +67,7 @@ $("#editForm").submit(function (event) {
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify(user)
     }).then(function () {
-        $('#editModal .close').click();
+        $('#closeEdit').click();
         getUsers();
     })
 })
@@ -89,7 +89,7 @@ $("#deleteForm").submit(function (event) {
     fetch('http://localhost:8080/api/admin/' + $("#id1").val(), {
         method: 'DELETE', })
         .then(function () {
-        $('#deleteModal .close').click();
+        $('#closeDelete').click();
         getUsers();
     })
 })

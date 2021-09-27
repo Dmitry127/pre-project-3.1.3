@@ -2,16 +2,14 @@ package ru.dmitry.seleznev.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.dmitry.seleznev.model.Role;
 import ru.dmitry.seleznev.model.User;
 import ru.dmitry.seleznev.service.UserService;
 
 import java.util.List;
-import java.util.Set;
+
 
 @RestController
 @RequestMapping("/api/admin")
