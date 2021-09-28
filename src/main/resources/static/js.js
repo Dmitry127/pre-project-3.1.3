@@ -7,23 +7,23 @@ function getUsers() {
         .then((response) => {
             return response.json()
         }).then(data => {
-            let tableRows = '';
-            let roles = '';
-            data.forEach(function (user) {
-                roles = userRoles(user.roles);
-                tableRows += '<tr>' +
-                    '<td>' + user.id + '</td>' +
-                    '<td>' + user.firstName + '</td>' +
-                    '<td>' + user.lastName + '</td>' +
-                    '<td>' + user.age + '</td>' +
-                    '<td>' + user.email + '</td>' +
-                    '<td>' + roles + '</td>' +
-                    '<td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#editModal"' +
-                    ' onclick="userEditModal(' + user.id + ')" id="btnEdit">Edit</button></td>' +
-                    '<td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"' +
-                    ' onclick="userDeleteModal(' + user.id + ')" id="btnDelete">Delete</button></td>' +
-                    '</tr>';
-            })
+        let tableRows = '';
+        let roles = '';
+        data.forEach(function (user) {
+            roles = userRoles(user.roles);
+            tableRows += '<tr>' +
+                '<td>' + user.id + '</td>' +
+                '<td>' + user.firstName + '</td>' +
+                '<td>' + user.lastName + '</td>' +
+                '<td>' + user.age + '</td>' +
+                '<td>' + user.email + '</td>' +
+                '<td>' + roles + '</td>' +
+                '<td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#editModal"' +
+                ' onclick="userEditModal(' + user.id + ')" id="btnEdit">Edit</button></td>' +
+                '<td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"' +
+                ' onclick="userDeleteModal(' + user.id + ')" id="btnDelete">Delete</button></td>' +
+                '</tr>';
+        })
         $('#usersTable tbody').empty().append(tableRows);
     })
 }
@@ -87,11 +87,12 @@ function userDeleteModal(id) {
 $("#deleteForm").submit(function (event) {
     event.preventDefault();
     fetch('http://localhost:8080/api/admin/' + $("#id1").val(), {
-        method: 'DELETE', })
-        .then(function () {
-        $('#closeDelete').click();
-        getUsers();
+        method: 'DELETE',
     })
+        .then(function () {
+            $('#closeDelete').click();
+            getUsers();
+        })
 })
 
 $("#newUserForm").submit(function (event) {

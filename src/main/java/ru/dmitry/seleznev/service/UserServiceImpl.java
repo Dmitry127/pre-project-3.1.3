@@ -8,22 +8,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dmitry.seleznev.dao.UserDAO;
-import ru.dmitry.seleznev.model.Role;
 import ru.dmitry.seleznev.model.User;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
-@Transactional
-public class UserServiceImpl implements  UserService, UserDetailsService {
+public class UserServiceImpl implements UserService, UserDetailsService {
+
     private final UserDAO userDAO;
+    private final RoleService roleService;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserDAO userDAO) {
+    public UserServiceImpl(UserDAO userDAO, RoleService roleService) {
         this.userDAO = userDAO;
+        this.roleService = roleService;
     }
 
     @Autowired
@@ -31,10 +30,10 @@ public class UserServiceImpl implements  UserService, UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
-
     @Override
-    public void saveUser(User user) {
+    @Transactional
+    public void saveUser(User user, String role) {
+        user.setRoles(roleService.getRoleSet(role));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDAO.saveUser(user);
     }
@@ -50,17 +49,14 @@ public class UserServiceImpl implements  UserService, UserDetailsService {
     }
 
     @Override
-    public Role getRole(String role) {
-        return userDAO.getRole(role);
-    }
-
-    @Override
     public List<User> getAllUsers() {
         return userDAO.getAllUsers();
     }
 
     @Override
-    public void updateUser(User user) {
+    @Transactional
+    public void updateUser(User user, String role) {
+        user.setRoles(roleService.getRoleSet(role));
         User persistentUser = getUser(user.getEmail());
         if (!user.getPassword().equals(persistentUser.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -69,24 +65,17 @@ public class UserServiceImpl implements  UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(long id) {
         userDAO.deleteUser(id);
     }
 
     @Override
+    @Transactional
     public void deleteUser(String email) {
         userDAO.deleteUser(email);
     }
 
-    @Override
-    public Set<Role> getRoleSet(String role) {
-        Set<Role> roleSet = new HashSet<>();
-        roleSet.add(getRole("USER"));
-        if (role.equals("ADMIN")) {
-            roleSet.add(getRole("ADMIN"));
-        }
-        return roleSet;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
