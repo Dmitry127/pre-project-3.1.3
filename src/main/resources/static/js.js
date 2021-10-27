@@ -52,17 +52,14 @@ function userEditModal(id) {
 $("#editForm").submit(function (event) {
     event.preventDefault();
     let user = {};
-    let role = $("#role0 :selected").text();
-    if (role === "") {
-        role = "USER";
-    }
+    user.roles = [{role: "ROLE_" + $("#role0 :selected").text()}];
 
     $("#editForm").find("input").each(function () {
         user[this.name] = $(this).val();
     });
 
 
-    fetch('http://localhost:8080/api/admin/' + role, {
+    fetch('http://localhost:8080/api/admin', {
         method: 'PATCH',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify(user)
@@ -98,15 +95,13 @@ $("#deleteForm").submit(function (event) {
 $("#newUserForm").submit(function (event) {
     event.preventDefault();
     let newUser = {};
-    let role = $("#role0 :selected").text();
-    if (role === "") {
-        role = "USER";
-    }
+    newUser.roles = [{role: "ROLE_" + $("#role :selected").text()}];
+
     $("#newUserForm").find("input").each(function () {
         newUser[this.name] = $(this).val();
     });
 
-    fetch('http://localhost:8080/api/admin/' + role, {
+    fetch('http://localhost:8080/api/admin', {
         method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify(newUser)

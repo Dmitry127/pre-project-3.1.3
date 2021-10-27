@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class MyRestController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public MyRestController(UserService userService) {
@@ -31,15 +31,15 @@ public class MyRestController {
         return ResponseEntity.ok().body(userService.getUser(id));
     }
 
-    @PostMapping("/{role}")
-    public ResponseEntity<?> newUser(@PathVariable String role, @RequestBody User user) {
-        userService.saveUser(user, role);
+    @PostMapping
+    public ResponseEntity<?> newUser(@RequestBody User user) {
+        userService.saveUser(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{role}")
-    public ResponseEntity<?> editUser(@PathVariable String role, @RequestBody User user) {
-        userService.updateUser(user, role);
+    @PatchMapping
+    public ResponseEntity<?> editUser(@RequestBody User user) {
+        userService.updateUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

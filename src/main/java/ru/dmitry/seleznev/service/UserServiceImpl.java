@@ -16,21 +16,21 @@ import java.util.List;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserDAO userDAO;
-    private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
+    private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(UserDAO userDAO, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder, RoleService roleService) {
         this.userDAO = userDAO;
-        this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
+        this.roleService = roleService;
     }
 
     @Override
     @Transactional
-    public void saveUser(User user, String role) {
-        user.setRoles(roleService.getRoleSet(role));
+    public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(roleService.getRoleSet(user.getRoles()));
         userDAO.saveUser(user);
     }
 
@@ -51,12 +51,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void updateUser(User user, String role) {
-        user.setRoles(roleService.getRoleSet(role));
+    public void updateUser(User user) {
         User persistentUser = getUser(user.getEmail());
         if (!user.getPassword().equals(persistentUser.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
+        user.setRoles(roleService.getRoleSet(user.getRoles()));
         userDAO.updateUser(user);
     }
 

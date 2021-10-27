@@ -25,7 +25,6 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
 
-
     @Column(name = "firstName")
     private String firstName;
 

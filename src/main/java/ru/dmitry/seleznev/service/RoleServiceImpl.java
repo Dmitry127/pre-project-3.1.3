@@ -1,6 +1,7 @@
 package ru.dmitry.seleznev.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dmitry.seleznev.dao.RoleDAO;
@@ -20,18 +21,28 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public void saveRole(Role role) {
+        roleDAO.saveRole(role);
+    }
+
+    @Override
     public Role getRole(String role) {
         return roleDAO.getRole(role);
     }
 
     @Override
     @Transactional
-    public Set<Role> getRoleSet(String role) {
-        Set<Role> roleSet = new HashSet<>();
-        roleSet.add(getRole("USER"));
-        if (role.equals("ADMIN")) {
-            roleSet.add(getRole("ADMIN"));
+    public Set<Role> getRoleSet(Set<Role> roleSet) {
+        Set<Role> resultSet = new HashSet<>();
+        for (Role r:
+             roleSet) {
+            try {
+                resultSet.add(getRole(r.getRole().substring(5)));
+            } catch (EmptyResultDataAccessException e) {
+                saveRole(new Role(r.getRole()));
+                resultSet.add(getRole(r.getRole().substring(5)));
+            }
         }
-        return roleSet;
+        return resultSet;
     }
 }
